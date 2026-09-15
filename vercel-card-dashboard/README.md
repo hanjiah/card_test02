@@ -24,7 +24,7 @@ GitHub에서 먼저 비어 있는 저장소를 만든 뒤, 위의 `본인계정/
 1. Vercel Dashboard에서 **Add New → Project**를 선택합니다.
 2. 방금 만든 GitHub 저장소를 Import합니다.
 3. Framework Preset은 **Other**, Root Directory는 저장소 루트로 둡니다.
-4. Build Command는 비워 두고, Output Directory도 비워 둡니다. Vercel이 `public/`을 정적 배포합니다.
+4. Build Command는 비워 둡니다. `vercel.json`이 Output Directory를 `public`으로 고정하므로 Dashboard 설정에 값이 남아 있다면 **Override**를 켜고 `public`으로 맞춥니다.
 5. **Deploy**를 누릅니다.
 
 `vercel.json`은 보안 헤더를 포함합니다. 대시보드는 Vercel Origin에 대한 공공 API CORS 허용 여부를 확인한 방식으로 동작합니다.
