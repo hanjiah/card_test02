@@ -1,0 +1,18 @@
+[build]
+  # No build process is required: the dashboard is a static HTML application.
+  publish = "."
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    # The API key is entered by the user at runtime; avoid caching this UI.
+    Cache-Control = "no-store"
+    Referrer-Policy = "no-referrer"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"

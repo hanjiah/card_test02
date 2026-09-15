@@ -1,0 +1,348 @@
+
+
+
+
+
+공공데이터 오픈API 활용가이드
+금융위원회_금융통계신용카드사정보
+
+
+		
+
+
+
+
+
+
+
+
+
+ 
+1. 서비스 명세	3
+1.1 금융위원회_금융통계신용카드사정보	3
+가. API 서비스 개요	3
+나. 상세기능 목록	3
+다. 상세기능내역	4
+1) 신용카드사일반현황조회 상세기능명세	4
+2) 신용카드사재무현황조회 상세기능명세	5
+3) 신용카드사주요경영지표조회 상세기능명세	6
+4) 신용카드사주요영업활동조회 상세기능명세	7
+2. OpenAPI 에러 코드정리	8
+
+ 
+1. 서비스 명세
+1.1 금융위원회_금융통계신용카드사정보
+가. API 서비스 개요
+API 서비스 정보	API명(영문)	GetCredCardCompInfoService
+	API명(국문)	금융위원회_금융통계신용카드사정보
+	API 설명	타이틀 기준년월을 조회하여 신용카드사 일반현황, 재무현황, 주요경영지표, 주요영업활동 등의 정보를 제공하는 금융위원회_금융통계신용카드사정보
+API 서비스
+보안적용
+기술 수준	서비스 인증/권한	[O] serviceKey    [ ] 인증서 (GPKI/NPKI)
+[ ] Basic (ID/PW)  [ ] 없음
+	메시지 레벨
+암호화	[ ] 전자서명   [ ] 암호화   [O] 없음
+	전송 레벨 암호화	[ ] SSL   [O] 없음
+	인터페이스 표준	[ ] SOAP 1.2
+(RPC-Encoded, Document Literal, Document Literal Wrapped)
+[O] REST (GET)
+[ ] RSS 1.0   [ ] RSS 2.0   [ ] Atom 1.0   [ ] 기타
+	교환 데이터 표준
+(중복선택가능)	[O] XML   [O] JSON   [ ] MIME   [ ] MTOM
+API 서비스
+배포정보	서비스 URL	http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService
+	서비스 명세 URL
+(WSDL 또는 WADL)	N/A
+	서비스 버전	1.0
+	서비스 시작일	2020-07-15	서비스 배포일	2020-07-15
+	서비스 이력	2020-07-15: 서비스 시작
+	메시지 교환유형	[O] Request-Response   [ ] Publish-Subscribe
+[ ] Fire-and-Forgot   [ ] Notification
+	서비스 제공자	
+	데이터 갱신주기	월1회
+
+나. 상세기능 목록
+번호	API명(국문)	상세기능명(영문)	상세기능명(국문)
+1	금융위원회_금융통계
+신용카드사정보	getCredCardCompGeneInfo	신용카드사일반현황조회
+2		getCredCardCompFinaInfo	신용카드사재무현황조회
+3		getCredCardCompKeyManaIndi	신용카드사주요경영지표조회
+4		getCredCardCompMajoBusiActi	신용카드사주요영업활동조회
+
+다. 상세기능내역
+1) 신용카드사일반현황조회 상세기능명세
+a) 상세기능정보
+상세기능 번호	1	상세기능 유형	조회 (목록)
+상세기능명(국문)	신용카드사일반현황조회
+상세기능 설명	타이틀, 기준년월등을 통하여 금융회사명, 인원수, 임직원수, 임직원 구분코드명등을 조회하는 신용카드사일반현황조회 기능
+Call Back URL	http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService/getCredCardCompGeneInfo
+최대 메시지 사이즈	[4000] byte
+평균 응답 시간	[500] ms	초당 최대 트랙잭션	[30] tps
+b) 요청 메시지 명세 
+항목명(영문)	항목명(국문)	항목크기	항목구분	샘플데이터	항목설명
+numOfRows	한 페이지 결과 수	4	1	1	한 페이지 결과 수
+pageNo	페이지 번호	4	1	1	페이지 번호
+resultType	결과형식	4	1	xml	결과형식(xml/json)
+serviceKey	서비스키	400	1	공공데이터포털에서 받은 인증키	공공데이터포털에서 받은 인증키
+title	타이틀	20	0	신용카드_일반현황_임직원현황	신용카드사 일반현황
+basYm	기준년월	6	0	201312	기준년월
+※ 항목구분 : 필수(1), 옵션(0) 
+c) 응답 메시지 명세
+항목명(영문)	항목명(국문)	항목크기	항목구분	샘플데이터	항목설명
+resultCode	결과코드	2	1	00	결과코드
+resultMsg	결과메시지	50	1	NORMAL SERVICE.	결과메시지
+numOfRows	한 페이지 결과 수	4	1	1	한 페이지 결과 수
+pageNo	페이지 번호	4	1	1	페이지 번호
+totalCount	전체 결과 수	10	1	72	전체 결과 수
+title	타이틀	20	0	신용카드_일반현황_임직원현황	신용카드_일반현황
+basYm	기준년월	6	1	201312	기준년월
+crno	법인등록번호	13	0	1101110641434	법인등록번호
+fncoCd	금융회사코드	20	1	0010226	금융감독원 금융회사 금융코드
+fncoNm	금융회사명	300	0	롯데카드	금융감독원 금융회사명
+xcsmCnt	임직원수	18	0	4	임직원 수
+xcsmDcd	임직원구분코드	9	1	A12	임직원구분코드
+xcsmDcdNm	임직원구분코드명	300	0	임원_비상근	임직원구분코드명
+※ 항목구분 : 필수(1), 옵션(0)
+d) 요청/응답 메시지 예제
+요청메시지
+http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService/getCredCardCompGeneInfo?pageNo=1&numOfRows=1&resultType=xml&title=신용카드_일반현황_임직원현황&basYm=201312&serviceKey=인증키
+응답메시지
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+    <header>
+        <resultCode>00</resultCode>
+        <resultMsg>NORMAL SERVICE.</resultMsg>
+        <pageNo>1</pageNo>
+        <numOfRows>1</numOfRows>
+    </header>
+    <body>
+        <table>
+            <title>신용카드_일반현황_임직원현황</title>
+            <totalCount>72</totalCount>
+            <items>
+                <item>
+                    <basYm>201312</basYm>
+                    <crno>1101110641434</crno>
+                    <fncoCd>0010226</fncoCd>
+                    <fncoNm>롯데카드</fncoNm>
+                    <xcsmCnt>4</xcsmCnt>
+                    <xcsmDcd>A12</xcsmDcd>
+                    <xcsmDcdNm>임원_비상근</xcsmDcdNm>
+                </item>
+            </items>
+        </table>
+    </body>
+</response>
+
+2) 신용카드사재무현황조회 상세기능명세
+a) 상세기능정보
+상세기능 번호	2	상세기능 유형	조회 (목록)
+상세기능명(국문)	신용카드사재무현황조회
+상세기능 설명	타이틀, 기준년월 등을 통하여 금융회사명, 자산요약재무상태표계정과목금액, 자산요약재무상태표계정과목코드, 자산요약재무상태표계정과목코드명, 자산요약재무상태표계정과목구성비율,  법인등록번호등을 조회하는  신용카드사재무현황조회 기능
+Call Back URL	http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService/getCredCardCompFinaInfo
+최대 메시지 사이즈	[4000] byte
+평균 응답 시간	[500] ms	초당 최대 트랙잭션	[30] tps
+b) 요청 메시지 명세 
+항목명(영문)	항목명(국문)	항목크기	항목구분	샘플데이터	항목설명
+numOfRows	한 페이지 결과 수	4	1	1	한 페이지 결과 수
+pageNo	페이지 번호	4	1	1	페이지 번호
+resultType	결과형식	4	1	xml	결과형식(xml/json)
+serviceKey	서비스키	400	1	공공데이터포털에서 받은 인증키	공공데이터포털에서 받은 인증키
+title	타이틀	20	0	신용카드_재무현황_요약재무상태표(자산)(07.12월이전)	신용카드사 재무현황
+basYm	기준년월	6	0	200612	기준년월
+\※ 항목구분 : 필수(1), 옵션(0) 
+c) 응답 메시지 명세
+항목명(영문)	항목명(국문)	항목크기	항목구분	샘플데이터	항목설명
+resultCode	결과코드	2	1	00	결과코드
+resultMsg	결과메시지	50	1	NORMAL SERVICE.	결과메시지
+numOfRows	한 페이지 결과 수	4	1	1	한 페이지 결과 수
+pageNo	페이지 번호	4	1	1	페이지 번호
+totalCount	전체 결과 수	10	1	294	전체 결과 수
+title	타이틀	20	0	신용카드_재무현황_요약재무상태표(자산)(07.12월이전)	신용카드_재무현황
+astSmryStfnpsAcitAmt	자산요약재무상태표계정과목금액	18	0	526891000000	금액
+astSmryStfnpsAcitCd	자산요약재무상태표계정과목코드	9	1	A44	요약재무상태표(자산) 계정과목코드
+astSmryStfnpsAcitCdNm	자산요약재무상태표계정과목코드명	300	0	카드자산_카드론	요약재무상태표(자산) 계정과목코드명
+astSmryStfnpsAcitCmpsRto	자산요약재무상태표계정과목구성비율	6	0	14.8	구성비
+basYm	기준년월	6	1	200612	기준년월
+crno	법인등록번호	13	0	1101112540270	법인등록번호
+fncoCd	금융회사코드	20	1	0011214	금융감독원 금융회사 금융코드
+fncoNm	금융회사명	300	0	신한카드주식회사(구)	금융감독원 금융회사명
+※ 항목구분 : 필수(1), 옵션(0)
+d) 요청/응답 메시지 예제
+요청메시지
+http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService/getCredCardCompFinaInfo?pageNo=1&numOfRows=1&resultType=xml&title=신용카드_재무현황_요약재무상태표(자산)(07.12월이전)&basYm=200612&serviceKey=인증키
+응답메시지
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+    <header>
+        <resultCode>00</resultCode>
+        <resultMsg>NORMAL SERVICE.</resultMsg>
+        <pageNo>1</pageNo>
+        <numOfRows>1</numOfRows>
+    </header>
+    <body>
+        <table>
+            <title>신용카드_재무현황_요약재무상태표(자산)(07.12월이전)</title>
+            <totalCount>294</totalCount>
+            <items>
+                <item>
+                    <astSmryStfnpsAcitAmt>526891000000</astSmryStfnpsAcitAmt>
+                    <astSmryStfnpsAcitCd>A44</astSmryStfnpsAcitCd>
+                    <astSmryStfnpsAcitCdNm>카드자산_카드론</astSmryStfnpsAcitCdNm>
+                    <astSmryStfnpsAcitCmpsRto>14.8</astSmryStfnpsAcitCmpsRto>
+                    <basYm>200612</basYm>
+                    <crno>1101112540270</crno>
+                    <fncoCd>0011214</fncoCd>
+                    <fncoNm>신한카드주식회사(구)</fncoNm>
+                </item>
+            </items>
+        </table>
+    </body>
+</response>
+
+3) 신용카드사주요경영지표조회 상세기능명세
+a) 상세기능정보
+상세기능 번호	3	상세기능 유형	조회 (목록)
+상세기능명(국문)	신용카드사주요경영지표조회
+상세기능 설명	타이틀, 기준년월등을 통하여 금융회사명, 영업용순자본비율항목코드, 영업용순자본비율항목코드명, 영업용순자본비율항목값, 법인등록번호등을 조회하는 신용카드사주요경영지표조회 기능
+Call Back URL	http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService/getCredCardCompKeyManaIndi
+최대 메시지 사이즈	[4000] byte
+평균 응답 시간	[500] ms	초당 최대 트랙잭션	[30] tps
+b) 요청 메시지 명세 
+항목명(영문)	항목명(국문)	항목크기	항목구분	샘플데이터	항목설명
+numOfRows	한 페이지 결과 수	4	1	1	한 페이지 결과 수
+pageNo	페이지 번호	4	1	1	페이지 번호
+resultType	결과형식	4	1	xml	결과형식(xml/json)
+serviceKey	서비스키	400	1	공공데이터포털에서 받은 인증키	공공데이터포털에서 받은 인증키
+title	타이틀	20	0	신용카드_주요경영지표_자본적정성	신용카드사 주요경영지표
+basYm	기준년월	6	0	201706	기준년월
+※ 항목구분 : 필수(1), 옵션(0) 
+c) 응답 메시지 명세
+항목명(영문)	항목명(국문)	항목크기	항목구분	샘플데이터	항목설명
+resultCode	결과코드	2	1	00	결과코드
+resultMsg	결과메시지	50	1	NORMAL SERVICE.	결과메시지
+numOfRows	한 페이지 결과 수	4	1	1	한 페이지 결과 수
+pageNo	페이지 번호	4	1	1	페이지 번호
+totalCount	전체 결과 수	10	1	48	전체 결과 수
+title	타이틀	20	0	신용카드_주요경영지표_자본적정성	신용카드_주요경영지표
+basYm	기준년월	6	1	201706	기준년월
+cpaqItemCd	자본적정성항목코드	9	1	A2	자본적정성항목코드
+cpaqItemCdNm	자본적정성항목코드명	300	0	조정자기자본비율_조정총자산	자본적정성항목코드명
+cpaqItemValCtt	자본적정성항목값내용	22	0	20219343660000	금액 또는 비율
+crno	법인등록번호	13	0	1101110346901	법인등록번호
+fncoCd	금융회사코드	20	1	0010228	금융감독원 금융회사 금융코드
+fncoNm	금융회사명	300	0	삼성카드	금융감독원 금융회사명
+※ 항목구분 : 필수(1), 옵션(0)
+d) 요청/응답 메시지 예제
+요청메시지
+http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService/getCredCardCompKeyManaIndi?pageNo=1&numOfRows=1&resultType=xml&title=신용카드_주요경영지표_자본적정성&basYm=201706&serviceKey=인증키
+응답메시지
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+    <header>
+        <resultCode>00</resultCode>
+        <resultMsg>NORMAL SERVICE.</resultMsg>
+        <pageNo>1</pageNo>
+        <numOfRows>1</numOfRows>
+    </header>
+    <body>
+        <table>
+            <title>신용카드_주요경영지표_자본적정성</title>
+            <totalCount>48</totalCount>
+            <items>
+                <item>
+                    <basYm>201706</basYm>
+                    <cpaqItemCd>A2</cpaqItemCd>
+                    <cpaqItemCdNm>조정자기자본비율_조정총자산</cpaqItemCdNm>
+                    <cpaqItemValCtt>20219343660000</cpaqItemValCtt>
+                    <crno>1101110346901</crno>
+                    <fncoCd>0010228</fncoCd>
+                    <fncoNm>삼성카드</fncoNm>
+                </item>
+            </items>
+        </table>
+    </body>
+</response>
+
+4) 신용카드사주요영업활동조회 상세기능명세
+a) 상세기능정보
+상세기능 번호	4	상세기능 유형	조회 (목록)
+상세기능명(국문)	신용카드사주요영업활동조회
+상세기능 설명	타이틀, 기준년월 등을 통하여, 금융회사명, 신용카드이용실적항목코드, 신용카드이용실적항목코드명, 신용카드이용실적항목누계금액, 신용카드이용실적항목당분기금액, 금융회사명등을 조회하는 신용카드사주요영업활동조회 기능
+Call Back URL	http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService/getCredCardCompMajoBusiActi
+최대 메시지 사이즈	[4000] byte
+평균 응답 시간	[500] ms	초당 최대 트랙잭션	[30] tps
+b) 요청 메시지 명세 
+항목명(영문)	항목명(국문)	항목크기	항목구분	샘플데이터	항목설명
+numOfRows	한 페이지 결과 수	4	1	1	한 페이지 결과 수
+pageNo	페이지 번호	4	1	1	페이지 번호
+resultType	결과형식	4	1	xml	결과형식(xml/json)
+serviceKey	서비스키	400	1	공공데이터포털에서 받은 인증키	공공데이터포털에서 받은 인증키
+title	타이틀	20	0	신용카드_주요영업활동_신용카드이용실적	신용카드사 주요영업활동
+basYm	기준년월	6	0	201609	기준년월
+※ 항목구분 : 필수(1), 옵션(0) 
+c) 응답 메시지 명세
+항목명(영문)	항목명(국문)	항목크기	항목구분	샘플데이터	항목설명
+resultCode	결과코드	2	1	00	결과코드
+resultMsg	결과메시지	50	1	NORMAL SERVICE.	결과메시지
+numOfRows	한 페이지 결과 수	4	1	1	한 페이지 결과 수
+pageNo	페이지 번호	4	1	1	페이지 번호
+totalCount	전체 결과 수	10	1	162	전체 결과 수
+title	타이틀	20	0	신용카드_주요영업활동_신용카드이용실적	신용카드_주요영업활동
+basYm	기준년월	6	1	201609	기준년월
+crcdUzAtrsItemCd	신용카드이용실적항목코드	9	1	A1	신용카드이용실적항목코드
+crcdUzAtrsItemCdNm	신용카드이용실적항목코드명	300	0	개인_일시불	신용카드이용실적항목코드명
+crcdUzAtrsItemCmtlAmt	신용카드이용실적항목누계금액	18	0	18183466000000	누계 금액
+crcdUzAtrsItemThqrAmt	신용카드이용실적항목당분기금액	18	0	6390242000000	당분기 금액
+crno	법인등록번호	13	0	1101110641434	법인등록번호
+fncoCd	금융회사코드	20	1	0010226	금융감독원 금융회사 금융코드
+fncoNm	금융회사명	300	0	롯데카드	금융감독원 금융회사명
+※ 항목구분 : 필수(1), 옵션(0)
+d) 요청/응답 메시지 예제
+요청메시지
+http://apis.data.go.kr/1160100/service/GetCredCardCompInfoService/getCredCardCompMajoBusiActi?pageNo=1&numOfRows=1&resultType=xml&title=신용카드_주요영업활동_신용카드이용실적&basYm=201609&serviceKey=인증키
+응답메시지
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+    <header>
+        <resultCode>00</resultCode>
+        <resultMsg>NORMAL SERVICE.</resultMsg>
+        <pageNo>1</pageNo>
+        <numOfRows>1</numOfRows>
+    </header>
+    <body>
+        <table>
+            <title>신용카드_주요영업활동_신용카드이용실적</title>
+            <totalCount>162</totalCount>
+            <items>
+                <item>
+                    <basYm>201609</basYm>
+                    <crcdUzAtrsItemCd>A1</crcdUzAtrsItemCd>
+                    <crcdUzAtrsItemCdNm>개인_일시불</crcdUzAtrsItemCdNm>
+                    <crcdUzAtrsItemCmtlAmt>18183466000000</crcdUzAtrsItemCmtlAmt>
+                    <crcdUzAtrsItemThqrAmt>6390242000000</crcdUzAtrsItemThqrAmt>
+                    <crno>1101110641434</crno>
+                    <fncoCd>0010226</fncoCd>
+                    <fncoNm>롯데카드</fncoNm>
+                </item>
+            </items>
+        </table>
+    </body>
+</response>
+
+2. OpenAPI 에러 코드정리
+에러코드	에러메시지	설명
+1	APPLICATION_ERROR	어플리케이션 에러
+10	INVALID_REQUEST_PARAMETER_ERROR	잘못된 요청 파라메터 에러
+12	NO_OPENAPI_SERVICE_ERROR	해당 오픈API서비스가 없거나 폐기됨
+20	SERVICE_ACCESS_DENIED_ERROR	서비스 접근거부
+22	LIMITED_NUMBER_OF_SERVICE_REQUESTS_EXCEEDS_ERROR	서비스 요청제한횟수 초과에러
+30	SERVICE_KEY_IS_NOT_REGISTERED_ERROR	등록되지 않은 서비스키
+31	DEADLINE_HAS_EXPIRED_ERROR	기한만료된 서비스키
+32	UNREGISTERED_IP_ERROR	등록되지 않은 IP
+99	UNKNOWN_ERROR	기타에러
+

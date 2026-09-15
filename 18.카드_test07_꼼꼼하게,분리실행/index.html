@@ -1,0 +1,57 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>신용카드사 비교</title><style>
+:root{--n:#102a43;--b:#1677d2;--l:#d8e2ec;--m:#627d98}*{box-sizing:border-box}body{margin:0;background:#f5f8fb;color:var(--n);font:15px/1.5 system-ui,'Malgun Gothic',sans-serif}.wrap{max-width:1180px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;gap:15px;align-items:end}h1{margin:0;font-size:clamp(25px,4vw,34px)}h1 span{color:var(--b)}.sub{color:var(--m);font-size:13px}.panel,.card{background:#fff;border:1px solid var(--l);border-radius:14px;padding:17px;margin-top:16px}.grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.15fr auto;gap:10px;align-items:end}label{display:grid;gap:4px;font-size:12px;font-weight:700;color:var(--m)}input,select,button{font:inherit;padding:10px;border:1px solid #b9c9d8;border-radius:8px;color:var(--n);background:#fff}button{background:var(--b);border-color:var(--b);color:#fff;font-weight:700;min-height:42px;cursor:pointer}.note{font-size:12px;color:var(--m);margin:12px 0 0}.alert{display:none;background:#fff3cd;color:#765800;border-radius:8px;padding:10px;margin-top:12px;white-space:pre-wrap}.hidden{display:none}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stats b{font-size:24px;display:block}.chart{height:330px;position:relative}.empty{text-align:center;color:var(--m);padding:120px 5px}.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.filters input{min-width:240px}.table{overflow:auto;max-height:480px}table{border-collapse:collapse;width:100%;min-width:700px;font-size:13px}th,td{padding:10px;border-bottom:1px solid var(--l);text-align:left}th{position:sticky;top:0;background:#f7fbff;color:var(--m)}.num{text-align:right;font-variant-numeric:tabular-nums}@media(max-width:820px){.wrap{padding:14px}header{display:block}.grid{grid-template-columns:1fr 1fr}.grid label:first-child,.grid button{grid-column:1/-1}.stats{grid-template-columns:1fr}.chart{height:300px}}
+</style></head><body><main class="wrap"><header><div><h1>국내 <span>신용카드사</span> 비교</h1><div class="sub">금융위원회 금융통계 신용카드사정보 · 실제 OpenAPI</div></div><div class="sub">인증키는 서버·파일·브라우저 저장소에 저장하지 않습니다.</div></header>
+<section class="panel"><div class="grid"><label>공공데이터포털 인증키<input id="key" type="password" placeholder="Decoding 또는 Encoding 인증키" autocomplete="off"></label><label>조회 항목<select id="kind"><option value="business">주요 영업활동</option><option value="management">주요 경영지표</option><option value="financial">재무현황</option><option value="general">일반현황</option></select></label><label>기준년월<input id="bas" inputmode="numeric"></label><label>타이틀<input id="title"></label><button id="load">실제 데이터 조회</button></div><p class="note">설명서 예시의 title·basYm을 기본 적용합니다. XML/HTTPS로 요청하고 통신 실패 시 최대 3회 재시도합니다. title 조건 결과가 없으면 title 없이 한 번 더 조회합니다.</p><div id="alert" class="alert"></div></section>
+<section id="result" class="hidden"><div class="stats"><div class="card"><small>원본 응답 행</small><b id="raw">0</b></div><div class="card"><small>비교 카드사 수</small><b id="count">0</b></div><div class="card"><small>집계 기준</small><b>카드사명</b></div></div><section class="panel"><div class="filters"><input id="search" placeholder="카드사명 검색"></div><div class="chart"><canvas id="canvas"></canvas><div id="empty" class="empty">표시할 수치가 없습니다.</div></div></section><section class="panel table"><table><thead><tr><th>기준년월</th><th>카드사</th><th>합산 항목 수</th><th>주요 값</th><th>당분기 값</th><th>회사 코드</th></tr></thead><tbody id="body"></tbody></table></section></section></main>
+<script>
+const preset={business:['신용카드_주요영업활동_신용카드이용실적','201609'],management:['신용카드_주요경영지표_자본적정성','201706'],financial:['신용카드_재무현황_요약재무상태표(자산)(07.12월이전)','200612'],general:['신용카드_일반현황_임직원현황','201312']};let rows=[],kind='business';const $=x=>document.getElementById(x),s=x=>x==null?'':String(x),n=x=>Number(s(x).replaceAll(',',''))||0,fmt=x=>n(x).toLocaleString('ko-KR',{maximumFractionDigits:2});function col(r){let a={business:['crcdUzAtrsItemCmtlAmt','crcdUzAtrsItemThqrAmt'],management:['cpaqItemValCtt',''],financial:['astSmryStfnpsAcitAmt',''],general:['xcsmCnt','']}[kind];return [r[a[0]],r[a[1]]]}function msg(x){$('alert').textContent=x;$('alert').style.display=x?'block':'none'}function filtered(){let q=$('search').value.toLowerCase();return rows.filter(r=>s(r.fncoNm).toLowerCase().includes(q))}function render(){let data=filtered(),body=$('body');body.innerHTML=data.map(r=>{let v=col(r);return `<tr><td>${s(r.basYm)}</td><td><b>${s(r.fncoNm)}</b></td><td class="num">${r._sourceCount||1}</td><td class="num">${fmt(v[0])}</td><td class="num">${v[1]?fmt(v[1]):'-'}</td><td>${s(r.fncoCd)}</td></tr>`}).join('')||'<tr><td colspan="6">조건에 맞는 카드사가 없습니다.</td></tr>';chart(data)}function chart(data){let c=$('canvas'),e=$('empty'),use=data.filter(r=>n(col(r)[0])>0).sort((a,b)=>n(col(b)[0])-n(col(a)[0])).slice(0,12);if(!use.length){c.style.display='none';e.style.display='block';return}c.style.display='block';e.style.display='none';let box=c.parentElement.getBoundingClientRect(),d=devicePixelRatio||1,w=box.width,h=box.height;c.width=w*d;c.height=h*d;c.style.width=w+'px';c.style.height=h+'px';let x=c.getContext('2d');x.scale(d,d);x.clearRect(0,0,w,h);let left=Math.min(135,w*.35),bh=Math.max(14,Math.min(24,(h-45)/use.length)),gap=(h-35-bh*use.length)/(use.length-1||1),max=Math.max(...use.map(r=>n(col(r)[0])));x.font='12px system-ui';use.forEach((r,i)=>{let y=20+i*(bh+gap),z=(w-left-62)*n(col(r)[0])/max;x.fillStyle='#e8f2fc';x.fillRect(left,y,w-left-62,bh);x.fillStyle='#1677d2';x.fillRect(left,y,z,bh);x.fillStyle='#334e68';x.textAlign='right';x.fillText(s(r.fncoNm).slice(0,16),left-8,y+bh-3);x.textAlign='left';x.fillText(fmt(col(r)[0]),Math.min(left+z+5,w-54),y+bh-3)})}async function load(){if(!$('key').value.trim())return msg('유효한 인증키가 없어서 실제 데이터를 검증할 수 없습니다. 공공데이터포털 인증키를 입력하세요.');msg('HTTPS/XML 공공 API를 조회하고 있습니다…');$('result').classList.add('hidden');kind=$('kind').value;let p=new URLSearchParams({key:$('key').value,kind,title:$('title').value,basYm:$('bas').value});try{let r=await fetch('/api/cards?'+p),d=await r.json();if(!r.ok)throw Error(d.error+(d.detail?'\n'+d.detail:''));if(!d.items?.length)throw Error('조회 결과가 없습니다. API title 또는 기준년월을 확인하세요.');rows=d.items;$('raw').textContent=(d.rawCount||rows.length).toLocaleString();$('count').textContent=rows.length.toLocaleString();$('result').classList.remove('hidden');msg(`정상 응답: ${d.rawCount||rows.length}개 원본 행을 카드사명 기준 ${rows.length}개로 합산했습니다.`+(d.titleFallbackUsed?' title 없이 재조회했습니다.':''));render()}catch(e){msg('실제 데이터 조회 실패\n'+e.message)}}$('kind').onchange=()=>{let p=preset[$('kind').value];$('title').value=p[0];$('bas').value=p[1]};$('load').onclick=load;$('search').oninput=render;addEventListener('resize',()=>rows.length&&render());$('kind').dispatchEvent(new Event('change'));
+</script><script>
+/* Direct browser transport: avoids restricted Python-process outbound sockets. */
+const directBase='https://apis.data.go.kr/1160100/service/GetCredCardCompInfoService';
+const directEndpoint={general:'getCredCardCompGeneInfo',financial:'getCredCardCompFinaInfo',management:'getCredCardCompKeyManaIndi',business:'getCredCardCompMajoBusiActi'};
+const directNumber={general:['xcsmCnt'],financial:['astSmryStfnpsAcitAmt'],management:['cpaqItemValCtt'],business:['crcdUzAtrsItemCmtlAmt','crcdUzAtrsItemThqrAmt']};
+const sleep=ms=>new Promise(done=>setTimeout(done,ms));
+function xmlText(node,name){const item=node.getElementsByTagName(name)[0];return item?item.textContent:''}
+async function directPage(type,params,page){
+  const query=new URLSearchParams({...params,pageNo:String(page)}),url=`${directBase}/${directEndpoint[type]}?${query}`;
+  let error;
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const response=await fetch(url),source=await response.text(),doc=new DOMParser().parseFromString(source,'application/xml');
+      const auth=doc.getElementsByTagName('cmmMsgHeader')[0];
+      if(auth) throw Error(`${xmlText(auth,'returnReasonCode')} ${xmlText(auth,'returnAuthMsg')||xmlText(auth,'errMsg')}`.trim());
+      if(!response.ok) throw Error(`HTTP ${response.status}`);
+      const header=doc.getElementsByTagName('header')[0],code=xmlText(header,'resultCode'),message=xmlText(header,'resultMsg');
+      if(code&&code!=='00') throw Error(`${code} ${message}`);
+      const items=[...doc.getElementsByTagName('item')].map(item=>Object.fromEntries([...item.children].map(child=>[child.tagName,child.textContent])));
+      return {items,total:Number(xmlText(doc,'totalCount'))||items.length};
+    }catch(e){error=e;if(attempt<2)await sleep(700*(attempt+1));}
+  }
+  throw error;
+}
+async function directAll(type,params){
+  let page=1,all=[],total=Infinity;
+  while(page<=200&&all.length<total){const part=await directPage(type,params,page);all.push(...part.items);total=part.total;if(!part.items.length)break;page++;}
+  return all;
+}
+function directAggregate(type,items){
+  const companies=new Map();
+  for(const item of items){const name=item.fncoNm||'회사명 미상',old=companies.get(name);if(!old){companies.set(name,{...item,_sourceCount:1,_aggregateLabel:'제공 항목 합산'});continue;}old._sourceCount++;for(const field of directNumber[type])old[field]=String((Number(old[field])||0)+(Number(item[field])||0));}
+  return [...companies.values()].sort((a,b)=>(a.fncoNm||'').localeCompare(b.fncoNm||''));
+}
+async function directLoad(){
+  const entered=$('key').value.trim();
+  if(!entered)return msg('유효한 인증키가 없어서 실제 데이터를 검증할 수 없습니다. 공공데이터포털 인증키를 입력하세요.');
+  msg('브라우저에서 HTTPS/XML 공공 API를 직접 조회하고 있습니다…');$('result').classList.add('hidden');kind=$('kind').value;
+  let decoded=entered;try{decoded=decodeURIComponent(entered)}catch(_){}
+  const params={numOfRows:'100',resultType:'xml',serviceKey:decoded,basYm:$('bas').value.trim(),title:$('title').value.trim()};
+  try{
+    let source=await directAll(kind,params),fallback=false;
+    if(!source.length&&params.title){delete params.title;source=await directAll(kind,params);fallback=true;}
+    if(!source.length)throw Error('조회 결과가 없습니다. API title 또는 기준년월을 확인하세요.');
+    rows=directAggregate(kind,source);$('raw').textContent=source.length.toLocaleString();$('count').textContent=rows.length.toLocaleString();$('result').classList.remove('hidden');
+    msg(`정상 응답: ${source.length}개 원본 행을 카드사명 기준 ${rows.length}개로 합산했습니다.`+(fallback?' title 없이 재조회했습니다.':''));render();
+  }catch(e){msg('실제 데이터 조회 실패\n'+(e.message||String(e))+'\n인증키가 유효한지와 공공데이터포털 서비스 활용승인을 확인하세요.');}
+}
+$('load').onclick=directLoad;
+</script></body></html>
